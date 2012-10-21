@@ -715,7 +715,7 @@ class FixPEP8(object):
 
         self.source[line_index] = first + self.newline + second
 
-    def fix_e711(self, result):
+    def fix_e71(self, result, literal):
         """Fix comparison."""
         line_index = result['line'] - 1
         target = self.source[line_index]
@@ -729,7 +729,7 @@ class FixPEP8(object):
         center = target[offset:right_offset]
         right = target[right_offset:].lstrip()
 
-        if not right.startswith('None'):
+        if not right.startswith(literal):
             return []
 
         if center.strip() == '==':
@@ -740,6 +740,15 @@ class FixPEP8(object):
             return []
 
         self.source[line_index] = ' '.join([left, new_center, right])
+
+    def fix_e711(self, result):
+        return self.fix_e71(result, 'None')
+
+    def fix_e712(self, result):
+        rv = self.fix_e71(result, 'True')
+        if rv == []:
+            rv = self.fix_e71(result, 'False')
+        return rv
 
     def fix_e721(self, _):
         """Switch to use isinstance()."""

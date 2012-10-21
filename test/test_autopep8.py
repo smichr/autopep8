@@ -1496,6 +1496,16 @@ raise IOError('abc '
         self._inner_setup(line)
         self.assertEqual(self.result, fixed)
 
+    def test_e712(self):
+        line = 'foo == True\n'
+        fixed = 'foo is True\n'
+        self._inner_setup(line)
+        self.assertEqual(self.result, fixed)
+        line = 'foo == False\n'
+        fixed = 'foo is False\n'
+        self._inner_setup(line)
+        self.assertEqual(self.result, fixed)
+
     def test_e721(self):
         line = "type('') == type('')\n"
         fixed = "isinstance('', type(''))\n"
